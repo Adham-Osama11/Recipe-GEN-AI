@@ -8,14 +8,12 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
-      - key: HUGGINGFACEHUB_API_TOKEN
+      - key: GROQ_API_KEY
         sync: false
-      - key: HUGGINGFACE_MODEL
-        value: HuggingFaceTB/SmolLM2-1.7B-Instruct
-      - key: HUGGINGFACE_TEMPERATURE
-        value: "0.2"
-      - key: HUGGINGFACE_MAX_NEW_TOKENS
-        value: "900"
+      - key: GROQ_MODEL
+        value: llama-3.1-8b-instant
+      - key: GROQ_TEMPERATURE
+        value: "0.85"
       - key: LLM_MAX_RETRIES
         value: "2"
       - key: PARSER_MAX_RETRIES

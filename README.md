@@ -37,10 +37,11 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Set your token in `backend/.env`:
+Set your Groq credentials in `backend/.env`:
 
 ```bash
-HUGGINGFACEHUB_API_TOKEN=your_huggingface_token
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=llama-3.1-8b-instant
 ```
 
 ## Run the App
@@ -62,22 +63,6 @@ Endpoints:
 - `POST /generate` (also supported)
 
 The same server also serves the frontend static files from the `frontend` folder.
-
-## Deploy (Render)
-
-This repo includes a Render blueprint at `render.yaml`.
-
-1. Push the repository to GitHub.
-2. In Render, choose New + > Blueprint.
-3. Select this repository and deploy.
-4. In the created service, set `HUGGINGFACEHUB_API_TOKEN` to your real token.
-5. Open the service URL once deployment is finished.
-
-Notes:
-- Render injects `PORT` automatically. The app already reads it in `backend/app/main.py`.
-- The frontend is served by the same backend process, so one web service is enough.
-- If you want stricter CORS, set `ALLOWED_ORIGINS` in Render to your deployed URL.
-- The blueprint pins `PYTHON_VERSION=3.12.8` to avoid Python 3.14 build issues with `pydantic-core`.
 
 ## Request / Response
 

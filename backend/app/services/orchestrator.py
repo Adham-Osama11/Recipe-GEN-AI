@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from langchain_community.llms import HuggingFaceHub
+from langchain_groq import ChatGroq
 
 from app.config import get_settings
 from app.models.schema import GenerateRecipeRequest, RecipeResponse
@@ -18,38 +18,28 @@ class RecipeOrchestrator:
     def __init__(self) -> None:
         settings = get_settings()
         self.settings = settings
-        self.llm = None
-        self.recipe_chain = None
-        self.nutrition_chain = None
-        self.alternatives_chain = None
 
-        if settings.huggingfacehub_api_token:
-            self.llm = HuggingFaceHub(
-                repo_id=settings.huggingface_model,
-                huggingfacehub_api_token=settings.huggingfacehub_api_token,
-                model_kwargs={
-                    "temperature": settings.huggingface_temperature,
-                    "max_new_tokens": settings.huggingface_max_new_tokens,
-                    "return_full_text": False,
-                },
-            )
+        self.llm = ChatGroq(
+            api_key=settings.groq_api_key,
+            model=settings.groq_model,
+            temperature=settings.groq_temperature,
+        )
 
-            self.recipe_chain = RecipeGenerationChain(self.llm, settings.parser_max_retries)
-            self.nutrition_chain = NutritionCostChain(self.llm, settings.parser_max_retries)
-            self.alternatives_chain = AlternativesChain(self.llm, settings.parser_max_retries)
+        self.recipe_chain = RecipeGenerationChain(self.llm, settings.parser_max_retries)
+        self.nutrition_chain = NutritionCostChain(self.llm, settings.parser_max_retries)
+        self.alternatives_chain = AlternativesChain(self.llm, settings.parser_max_retries)
 
     def generate(self, payload: GenerateRecipeRequest) -> RecipeResponse:
-        if not self.llm or not self.recipe_chain or not self.nutrition_chain or not self.alternatives_chain:
-            return generate_fallback_recipe(payload=payload, reason="Hugging Face token missing or model unavailable")
-
         try:
             recipe_draft = self.recipe_chain.run(payload)
+
             nutrition_cost_draft = self.nutrition_chain.run(recipe_draft)
 
             calorie_result = estimate_recipe_calories(
                 ingredients=recipe_draft.ingredients,
                 estimates=nutrition_cost_draft.ingredient_estimates,
             )
+
             cost_result = estimate_recipe_cost(
                 ingredients=recipe_draft.ingredients,
                 estimates=nutrition_cost_draft.ingredient_estimates,
@@ -70,8 +60,9 @@ class RecipeOrchestrator:
                 steps=recipe_draft.steps,
                 alternatives=alternatives,
             )
+
         except Exception as exc:
-            # Graceful fallback keeps API useful if model quota is exhausted.
+            print("MODEL FAILED:", str(exc))
             return generate_fallback_recipe(payload=payload, reason=str(exc))
 
 

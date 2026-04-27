@@ -12,25 +12,58 @@ class RecipeGenerationChain:
         self.llm = llm
         self.parser_max_retries = parser_max_retries
         self.parser = PydanticOutputParser(pydantic_object=RecipeDraft)
+
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 (
                     "system",
-                    "You are an expert chef assistant. "
-                    "Generate one recipe using ONLY the provided ingredients when possible. "
-                    "Do not add narrative text. Return JSON only and follow format instructions exactly.\n"
-                    "If ingredients are insufficient, still produce a practical minimal recipe and keep assumptions small.\n"
-                    "{format_instructions}",
+                    """
+You are a professional chef, cookbook author, and meal planner.
+
+Generate recipes that feel like real cookbook recipes, not AI summaries.
+
+STRICT RULES:
+
+1. Use the user's ingredients as the main ingredients.
+2. You may add common pantry ingredients when useful:
+salt, pepper, oil, butter, garlic, onion, lemon, herbs, spices.
+3. Recipe title must sound appetizing and realistic.
+4. Steps must be highly detailed and practical.
+5. Minimum 8 steps. Maximum 14 steps.
+6. Each step must include at least one of:
+   - cooking time
+   - heat level
+   - texture cue
+   - color cue
+   - aroma cue
+7. Never use vague phrases:
+   - cook until done
+   - prepare ingredients
+   - serve warm
+   - mix everything
+8. Recipe must be useful for real home cooking.
+9. Cooking time must match the steps.
+10. Return JSON only.
+
+{format_instructions}
+"""
                 ),
                 (
                     "human",
-                    "User ingredients list: {ingredients}\n"
-                    "User free text: {free_text}\n"
-                    "Rules:\n"
-                    "1) Keep steps concise and actionable.\n"
-                    "2) Include explicit quantity for each ingredient in the output.\n"
-                    "3) Cooking time must be integer minutes.\n"
-                    "4) Return JSON only.",
+                    """
+User ingredients:
+{ingredients}
+
+User request:
+{free_text}
+
+Rules:
+- Include exact ingredient quantities.
+- Include seasoning.
+- Make recipe flavorful.
+- Steps should read like a cookbook.
+- Return JSON only.
+"""
                 ),
             ]
         )
@@ -42,9 +75,14 @@ class RecipeGenerationChain:
             llm=self.llm,
             prompt=self.prompt,
             parser=self.parser,
-            input_data={"ingredients": ingredients_text, "free_text": payload.free_text},
+            input_data={
+                "ingredients": ingredients_text,
+                "free_text": payload.free_text,
+            },
             parser_max_retries=self.parser_max_retries,
         )
+
         if not isinstance(result, RecipeDraft):
             raise TypeError("RecipeGenerationChain returned invalid type")
+
         return result

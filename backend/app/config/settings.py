@@ -9,13 +9,9 @@ class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
     environment: str = "development"
 
-    huggingfacehub_api_token: str = Field(default="", alias="HUGGINGFACEHUB_API_TOKEN")
-    huggingface_model: str = Field(
-        default="HuggingFaceTB/SmolLM2-1.7B-Instruct",
-        alias="HUGGINGFACE_MODEL",
-    )
-    huggingface_temperature: float = Field(default=0.2, alias="HUGGINGFACE_TEMPERATURE")
-    huggingface_max_new_tokens: int = Field(default=900, alias="HUGGINGFACE_MAX_NEW_TOKENS")
+    groq_api_key: str = Field(default="", alias="GROQ_API_KEY")
+    groq_model: str = Field(default="llama-3.1-8b-instant", alias="GROQ_MODEL")
+    groq_temperature: float = Field(default=0.85, alias="GROQ_TEMPERATURE")
     llm_max_retries: int = Field(default=2, alias="LLM_MAX_RETRIES")
     parser_max_retries: int = Field(default=2, alias="PARSER_MAX_RETRIES")
 
