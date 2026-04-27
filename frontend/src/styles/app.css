@@ -1,0 +1,220 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap");
+
+:root {
+  --bg: #fff8ef;
+  --bg-accent: #ffe6c7;
+  --surface: #fffdf8;
+  --ink: #1f2a1f;
+  --muted: #6f7667;
+  --primary: #e57a1f;
+  --primary-deep: #b65d10;
+  --success: #2d7f43;
+  --error: #b42318;
+  --shadow: 0 12px 30px rgba(44, 36, 21, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%, #fff1dc 0, #fff8ef 40%),
+    radial-gradient(circle at 95% 0%, #ffe3be 0, transparent 30%),
+    linear-gradient(160deg, #fff8ef 0%, #fff2df 100%);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Fraunces", serif;
+  margin-top: 0;
+}
+
+.app-shell {
+  width: min(1000px, 92vw);
+  margin: 0 auto;
+  padding: 2.5rem 0 4rem;
+}
+
+.hero {
+  animation: floatIn 500ms ease-out;
+}
+
+.eyebrow {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary-deep);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  line-height: 1.1;
+  max-width: 760px;
+}
+
+.subtitle {
+  color: var(--muted);
+  max-width: 760px;
+  line-height: 1.5;
+}
+
+.panel,
+.recipe-card {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 1.4rem;
+  backdrop-filter: blur(3px);
+}
+
+.panel {
+  margin-top: 1.2rem;
+  animation: floatIn 650ms ease-out;
+}
+
+.input-form {
+  display: grid;
+  gap: 0.8rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+textarea {
+  border: 1px solid #e3dccf;
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+  font-family: inherit;
+  resize: vertical;
+  background: #fff;
+  transition: border-color 180ms ease;
+}
+
+textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary) 0%, #f39d4d 100%);
+  color: white;
+  font-weight: 700;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 200ms ease;
+  box-shadow: 0 6px 18px rgba(229, 122, 31, 0.35);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.error {
+  color: var(--error);
+  margin: 0.8rem 0 0;
+  font-weight: 600;
+}
+
+.recipe-card {
+  margin-top: 1.2rem;
+  animation: floatIn 820ms ease-out;
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.recipe-meta span {
+  background: var(--bg-accent);
+  color: #6e3d0b;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding-left: 1.15rem;
+  line-height: 1.6;
+}
+
+.alternatives {
+  margin-top: 1rem;
+  background: #fff4e4;
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+
+.alt-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 720px) {
+  .recipe-grid,
+  .alt-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

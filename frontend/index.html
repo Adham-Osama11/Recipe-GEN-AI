@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Recipe Generator</title>
+    <link rel="stylesheet" href="/src/styles/app.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <p class="eyebrow">AI Recipe Generator</p>
+        <h1>Turn kitchen leftovers into a complete meal plan</h1>
+        <p class="subtitle">
+          Provide ingredients and context, then receive a structured recipe with cooking time,
+          calories, cost in EGP, and optimized alternatives.
+        </p>
+      </section>
+
+      <section class="panel">
+        <form class="input-form" id="recipe-form">
+          <label for="ingredients">Ingredients (comma-separated)</label>
+          <textarea
+            id="ingredients"
+            placeholder="Example: chicken, rice, onion, tomato"
+            rows="3"
+          ></textarea>
+
+          <label for="context">Extra context (optional)</label>
+          <textarea
+            id="context"
+            placeholder="Example: high protein, under 30 minutes"
+            rows="2"
+          ></textarea>
+
+          <div class="form-footer">
+            <span id="ingredient-count">0 ingredient(s) detected</span>
+            <button id="submit-button" type="submit">Generate Recipe</button>
+          </div>
+        </form>
+
+        <p class="error" id="error-message" hidden></p>
+      </section>
+
+      <section class="recipe-card" id="recipe-card" aria-live="polite" hidden></section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
