@@ -6,6 +6,7 @@ import os
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from threading import Lock
 from urllib.parse import urlparse
 
 from app.config import get_settings
@@ -16,8 +17,17 @@ from app.services.orchestrator import get_orchestrator
 class RecipeHTTPRequestHandler(BaseHTTPRequestHandler):
     server_version = "RecipeHTTP/1.0"
     settings = get_settings()
-    orchestrator = get_orchestrator()
+    orchestrator = None
+    orchestrator_lock = Lock()
     frontend_root = Path(__file__).resolve().parents[2] / "frontend"
+
+    @classmethod
+    def _get_orchestrator(cls):
+        if cls.orchestrator is None:
+            with cls.orchestrator_lock:
+                if cls.orchestrator is None:
+                    cls.orchestrator = get_orchestrator()
+        return cls.orchestrator
 
     def do_OPTIONS(self) -> None:  # noqa: N802
         self.send_response(HTTPStatus.NO_CONTENT)
@@ -49,9 +59,21 @@ class RecipeHTTPRequestHandler(BaseHTTPRequestHandler):
             self._send_json(HTTPStatus.BAD_REQUEST, {"detail": error})
             return
 
+        try:
+            orchestrator = self._get_orchestrator()
+        except Exception as exc:
+            self._send_json(
+                HTTPStatus.SERVICE_UNAVAILABLE,
+                {
+                    "detail": "Model is not configured. Set GROQ_API_KEY and restart the service.",
+                    "error": str(exc),
+                },
+            )
+            return
+
         status_code, response_data = handle_generate_request(
             payload_data=payload,
-            orchestrator=self.orchestrator,
+            orchestrator=orchestrator,
         )
         self._send_json(status_code, response_data)
 
