@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: recipe-gen-ai
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.main
+    envVars:
+      - key: HUGGINGFACEHUB_API_TOKEN
+        sync: false
+      - key: HUGGINGFACE_MODEL
+        value: HuggingFaceTB/SmolLM2-1.7B-Instruct
+      - key: HUGGINGFACE_TEMPERATURE
+        value: "0.2"
+      - key: HUGGINGFACE_MAX_NEW_TOKENS
+        value: "900"
+      - key: LLM_MAX_RETRIES
+        value: "2"
+      - key: PARSER_MAX_RETRIES
+        value: "2"
+      - key: REQUEST_TIMEOUT_SECONDS
+        value: "45"
+      - key: ALLOWED_ORIGINS
+        value: "*"
