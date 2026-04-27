@@ -77,6 +77,7 @@ Notes:
 - Render injects `PORT` automatically. The app already reads it in `backend/app/main.py`.
 - The frontend is served by the same backend process, so one web service is enough.
 - If you want stricter CORS, set `ALLOWED_ORIGINS` in Render to your deployed URL.
+- The blueprint pins `PYTHON_VERSION=3.12.8` to avoid Python 3.14 build issues with `pydantic-core`.
 
 ## Request / Response
 
